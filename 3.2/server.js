@@ -6,17 +6,16 @@ const buildApiUrl = (plz) => {
     return `https://app-prod-ws.meteoswiss-app.ch/v1/plzDetail?plz=${plz}00`;
 };
 
-app.get("/weather/:plz", (request, response) => {
+app.get("/weather/:plz", async (request, response) => {
     const plz = request.params.plz;
 
-    fetch(buildApiUrl(plz))
-        .then((response) => response.json())
-        .then((data) => {
-            response.status(200).send(data);
-        })
-        .catch((error) => {
-            response.status(500).send(error);
-        });
+    try {
+        const data = await fetch(buildApiUrl(plz));
+        const json = await data.json();
+        response.status(200).send(json);
+    } catch (error) {
+        response.status(500).send(error);
+    }
 });
 
 app.listen(port, () => {
