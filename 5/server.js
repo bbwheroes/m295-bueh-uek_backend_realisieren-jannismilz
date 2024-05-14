@@ -69,7 +69,7 @@ app.get("/books/:isbn", (request, response) => {
     if (book) {
         return response.status(200).json(book);
     }
-    response.status(404).send();
+    response.sendStatus(404);
 });
 
 app.post("/books", (request, response) => {
@@ -77,7 +77,7 @@ app.post("/books", (request, response) => {
 
     const validData = validateFields(book, ["isbn", "title", "year", "author"]);
     if (!validData) {
-        return response.status(422).send();
+        return response.sendStatus(422);
     }
 
     if (setData("books", "isbn", book, false)) {
@@ -93,7 +93,7 @@ app.put("/books/:isbn", (request, response) => {
 
     const validData = validateFields(book, ["title", "year", "author"]);
     if (!validData) {
-        return response.status(422).send();
+        return response.sendStatus(422);
     }
 
     return response
@@ -118,10 +118,10 @@ app.delete("/books/:isbn", (request, response) => {
                 books: parsedBooks,
             })
         );
-        return response.status(204).send();
+        return response.sendStatus(204);
     }
 
-    response.status(404).send();
+    response.sendStatus(404);
 });
 
 app.patch("/books/:isbn", (request, response) => {
@@ -130,7 +130,7 @@ app.patch("/books/:isbn", (request, response) => {
 
     const validData = validateFields(book, ["title", "year", "author"], false);
     if (!validData) {
-        return response.status(422).send();
+        return response.sendStatus(422);
     }
 
     return response
@@ -151,7 +151,7 @@ app.get("/lends/:id", (request, response) => {
     if (lend) {
         return response.status(200).json(lend);
     }
-    response.status(404).send();
+    response.sendStatus(404);
 });
 
 app.post("/lends", (request, response) => {
@@ -159,7 +159,7 @@ app.post("/lends", (request, response) => {
 
     const validData = validateFields(lending, ["id", "customer_id", "isbn"]);
     if (!validData) {
-        return response.status(422).send();
+        return response.sendStatus(422);
     }
 
     const books = getData().books;
@@ -204,7 +204,7 @@ app.delete("/lends/:id", (request, response) => {
     const lending = lends.find((lend) => lend.id == id);
 
     if (!lending) {
-        return response.status(404).send();
+        return response.sendStatus(404);
     }
 
     if ("returned_at" in lending) {
@@ -213,7 +213,7 @@ app.delete("/lends/:id", (request, response) => {
 
     lending.returned_at = new Date();
     setData("lends", "id", lending);
-    return response.status(204).send();
+    return response.sendStatus(204);
 });
 
 app.listen(port, () => {

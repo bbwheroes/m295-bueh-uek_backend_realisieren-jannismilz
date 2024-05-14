@@ -23,7 +23,7 @@ app.post("/names", (request, response) => {
 
     fs.writeFileSync(__dirname + "/names.json", JSON.stringify(parsedNames));
 
-    response.status(201).send();
+    response.sendStatus(201);
 });
 
 app.delete("/names", (request, response) => {
@@ -35,16 +35,16 @@ app.delete("/names", (request, response) => {
 
     fs.writeFileSync(__dirname + "/names.json", JSON.stringify(parsedNames));
 
-    response.status(204).send();
+    response.sendStatus(204);
 });
 app.get("/secret2", (request, response) => {
     const authHeader = request.headers["authorization"];
 
     if (authHeader === "Basic aGFja2VyOjEyMzQ=") {
-        return response.status(200).send();
+        return response.sendStatus(200);
     }
 
-    response.status(403).send();
+    response.sendStatus(403);
 });
 
 app.get("/chuck", async (request, response) => {
