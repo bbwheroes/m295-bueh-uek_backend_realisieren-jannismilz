@@ -71,8 +71,8 @@ app.get("/me", (request, response) => {
     response.status(200).json({
         vorname: "Jannis",
         nachname: "Milz",
-        alter: 17,
-        wohnort: "Dietlikon",
+        alter: 69,
+        wohnort: "Irgendwo in der Schweiz",
         augenfarbe: "braun",
     });
 });
