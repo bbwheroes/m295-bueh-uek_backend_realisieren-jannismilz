@@ -2,10 +2,6 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-const buildApiUrl = (plz) => {
-    return `https://app-prod-ws.meteoswiss-app.ch/v1/plzDetail?plz=${plz}00`;
-};
-
 app.get("/now", (request, response) => {
     response.status(200).send(new Date());
 });

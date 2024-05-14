@@ -1,0 +1,10 @@
+{
+  "books": [
+    {
+      "isbn": "1234567890",
+      "title": "The Great Gatsby",
+      "year": 1925,
+      "author": "F. Scott Fitzgerald"
+    }
+  ]
+}
