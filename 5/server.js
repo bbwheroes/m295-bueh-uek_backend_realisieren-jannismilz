@@ -1,4 +1,5 @@
 const fs = require("fs");
+const crypto = require("crypto");
 const express = require("express");
 const app = express();
 const port = 3000;
@@ -157,7 +158,7 @@ app.get("/lends/:id", (request, response) => {
 app.post("/lends", (request, response) => {
     const lending = request.body;
 
-    const validData = validateFields(lending, ["id", "customer_id", "isbn"]);
+    const validData = validateFields(lending, ["customer_id", "isbn"]);
     if (!validData) {
         return response.sendStatus(422);
     }
@@ -188,6 +189,7 @@ app.post("/lends", (request, response) => {
         return response.status(400).send("Kunde hat bereits 3 Ausleihen");
     }
 
+    lending.borrowed_at = crypto.randomBytes(16).toString("hex");
     lending.borrowed_at = new Date();
 
     if (setData("lends", "id", lending, false)) {
