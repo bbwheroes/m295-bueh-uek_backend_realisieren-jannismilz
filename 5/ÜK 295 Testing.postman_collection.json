@@ -1,0 +1,505 @@
+{
+	"info": {
+		"_postman_id": "568b25aa-8d73-4e62-86eb-58ada0d114c5",
+		"name": "ÜK 295 Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18217690"
+	},
+	"item": [
+		{
+			"name": "book - create - fail - no title provided",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(422);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "lend - create - fail - book doesn't exist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Buch gibt es nicht\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"isbn\": \"something which doesn't exist\",\n    \"customer_id\": \"123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/lends",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"lends"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "lend - create - fail - same book can't be borrowed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Buch ist bereits ausgeliehen\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"isbn\": \"1\",\n    \"customer_id\": \"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/lends",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"lends"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "book - get - success - all",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"4 books are getting returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).to.eql(4);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "book - get - success - single by isbn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/books/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "book - create - success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"pm.test(\"Book is getting returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.isbn).to.eql(\"123\");",
+							"    pm.expect(jsonData.title).to.eql(\"Deep Work\");",
+							"    pm.expect(jsonData.author).to.eql(\"Cal Newport\");",
+							"    pm.expect(jsonData.year).to.eql(2006);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"isbn\": \"123\",\n    \"title\": \"Deep Work\",\n    \"author\": \"Cal Newport\",\n    \"year\": 2006\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "book - put - success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Book is getting returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.isbn).to.eql(\"123\");",
+							"    pm.expect(jsonData.title).to.eql(\"Deep Work\");",
+							"    pm.expect(jsonData.author).to.eql(\"Jannis Milz\");",
+							"    pm.expect(jsonData.year).to.eql(2006);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Deep Work\",\n    \"author\": \"Jannis Milz\",\n    \"year\": 2006\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/books/123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books",
+						"123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "book - patch - success Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Book is getting returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.isbn).to.eql(\"123\");",
+							"    pm.expect(jsonData.title).to.eql(\"Deep Work\");",
+							"    pm.expect(jsonData.author).to.eql(\"Jannis Milz\");",
+							"    pm.expect(jsonData.year).to.eql(2012);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"year\": 2012\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/books/123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books",
+						"123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "lend - get - success - all",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"4 lends are getting returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).to.eql(4);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/lends",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"lends"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "lend - get - success - single by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/lends/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"lends",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "lend - create - success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"pm.test(\"Lending is getting returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.customer_id).to.eql(\"123\");",
+							"    pm.expect(jsonData.isbn).to.eql(\"123\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"customer_id\": \"123\",\n    \"isbn\": \"123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/lends",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"lends"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "lend - delete - success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status', () => {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/lends/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"lends",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
