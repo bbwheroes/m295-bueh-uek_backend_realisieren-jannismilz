@@ -198,7 +198,7 @@ app.post("/lends", (request, response) => {
     const book = books.find((book) => book.isbn === lending.isbn);
 
     if (!book) {
-        return response.status(400).send("Buch gibt es nicht");
+        return response.status(404).send("Buch gibt es nicht");
     }
 
     const lends = getData().lends;
